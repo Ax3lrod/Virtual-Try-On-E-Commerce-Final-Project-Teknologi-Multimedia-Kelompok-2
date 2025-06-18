@@ -57,6 +57,6 @@ export const products = [
     reviewCount: 30,
     imageUrl: 'https://example.com/product4.jpg',
     imagePath: '/images/products/golden_dress.png',
-    arUrl: 'https://lens.snap.com/experience/74fd5773-ff43-4ae3-8ae9-171b64ae894b',
+    arUrl: 'https://lens.snap.com/experience/324277d7-8fbe-490b-84c6-e44975fdac98',
   }
 ];
