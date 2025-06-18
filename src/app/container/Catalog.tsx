@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/Input';
 import ProductCard from '@/components/ProductCard';
+import CartNavigation from '@/components/CartNavigation';
 import { products } from '@/content/products';
 import { motion } from 'framer-motion';
 import { Search, Filter, SortAsc } from 'lucide-react';
@@ -24,6 +25,9 @@ export default function Catalog() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      {/* Cart Navigation */}
+      <CartNavigation />
+
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10"></div>

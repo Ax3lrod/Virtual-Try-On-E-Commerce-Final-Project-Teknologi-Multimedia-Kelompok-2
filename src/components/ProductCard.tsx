@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { CartService } from "@/app/functions/shop";
+import { useCart } from '@/context/CartContext';
 
 type ProductCardProps = {
   id: string;
@@ -16,21 +16,24 @@ type ProductCardProps = {
 
 export default function ProductCard({ id, name, price, imagePath }: ProductCardProps) {
   const [isLiked, setIsLiked] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const { addToCart } = useCart();
 
-  const cartService = new CartService();
-
-  const addToCart = () => {
+  const handleAddToCart = async () => {
+    if (isAdding) return;
+    
+    setIsAdding(true);
     try {
-      cartService.addItem(id);
-      alert('Item added to cart!');
+      addToCart(id);
+      // Brief success state
+      setTimeout(() => {
+        setIsAdding(false);
+      }, 1000);
     } catch (error) {
       console.error('Error adding item to cart:', error);
       alert('Failed to add item to cart.');
+      setIsAdding(false);
     }
-  };
-
-  const handleAddToCart = () => {
-    addToCart();
   };
 
   return (
@@ -108,9 +111,17 @@ export default function ProductCard({ id, name, price, imagePath }: ProductCardP
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Button className="w-full h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]" onClick={handleAddToCart}>
+            <Button 
+              className={`w-full h-12 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] ${
+                isAdding 
+                  ? 'bg-green-500 hover:bg-green-600 text-white' 
+                  : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white'
+              }`}
+              onClick={handleAddToCart}
+              disabled={isAdding}
+            >
               <ShoppingCart className="mr-2 w-5 h-5" />
-              Add to Cart
+              {isAdding ? 'Added!' : 'Add to Cart'}
             </Button>
           </motion.div>
 

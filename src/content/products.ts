@@ -38,7 +38,7 @@ export const products = [
     category: 'clothing',
     tags: ['dress', 'yellow', 'summer'],
     stock: 10,
-    discount: 12,
+    discount: 0.12,
     reviewCount: 20,
     imageUrl: 'https://example.com/product3.jpg',
     imagePath: '/images/products/yellow_dress.jpg',
