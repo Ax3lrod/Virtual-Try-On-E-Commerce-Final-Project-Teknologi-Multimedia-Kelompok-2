@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { CartService } from "@/app/functions/shop";
 
 type ProductCardProps = {
   id: string;
@@ -15,6 +16,22 @@ type ProductCardProps = {
 
 export default function ProductCard({ id, name, price, imagePath }: ProductCardProps) {
   const [isLiked, setIsLiked] = useState(false);
+
+  const cartService = new CartService();
+
+  const addToCart = () => {
+    try {
+      cartService.addItem(id);
+      alert('Item added to cart!');
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+      alert('Failed to add item to cart.');
+    }
+  };
+
+  const handleAddToCart = () => {
+    addToCart();
+  };
 
   return (
     <motion.div
@@ -91,7 +108,7 @@ export default function ProductCard({ id, name, price, imagePath }: ProductCardP
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Button className="w-full h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]">
+            <Button className="w-full h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]" onClick={handleAddToCart}>
               <ShoppingCart className="mr-2 w-5 h-5" />
               Add to Cart
             </Button>
