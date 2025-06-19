@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode, useMemo } from 'react';
 import { CartService } from '@/app/functions/shop';
 import { products } from '@/content/products';
 import Toast from '@/components/ui/Toast';
@@ -30,12 +30,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
-  const cartService = new CartService();
+  const cartService = useMemo(() => new CartService(), []);
 
-  const refreshCart = () => {
+  const refreshCart = useCallback(() => {
     const items = cartService.getCart();
     setCartItems(items);
-  };
+  }, [cartService]);
 
   const addToCart = (productId: string, quantity: number = 1) => {
     try {
@@ -72,7 +72,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     refreshCart();
-  }, []);
+  }, [refreshCart]);
 
   const { totalItems, totalPrice } = cartService.getCartTotals(cartItems);
 

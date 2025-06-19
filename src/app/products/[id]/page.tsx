@@ -3,7 +3,6 @@ import { products } from '@/content/products';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, ShoppingCart, Heart, Share, Star, Truck, Shield, RotateCcw, Camera } from 'lucide-react';
 import { motion } from 'framer-motion';
