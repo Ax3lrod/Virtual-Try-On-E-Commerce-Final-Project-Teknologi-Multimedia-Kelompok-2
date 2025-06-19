@@ -2,15 +2,15 @@ import { products } from "@/content/products";
 import { notFound } from "next/navigation";
 import ProductDetail from "@/components/ProductDetail";
 
-export function generateStaticParams() {
-  return products.map((product) => ({
-    id: product.id,
-  }));
-}
+type Props = {
+  params: { id: string };
+};
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+export default async function ProductPage({ params }: Props) {
   const product = products.find((p) => p.id === params.id);
-  if (!product) return notFound();
+  if (!product) {
+    notFound();
+  }
 
   return <ProductDetail product={product} />;
 }
