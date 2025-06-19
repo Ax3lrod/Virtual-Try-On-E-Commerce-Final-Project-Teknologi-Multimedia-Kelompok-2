@@ -10,10 +10,12 @@ import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 
 type ProductPageProps = {
-  id: string;
+  params: {
+    id: string;
+  };
 };
 
-export default function ProductPage({ params }: { params: ProductPageProps }) {
+export default function ProductPage({ params }: ProductPageProps) {
   const router = useRouter();
   const product = products.find((p) => p.id === params.id);
   const [isLiked, setIsLiked] = useState(false);
