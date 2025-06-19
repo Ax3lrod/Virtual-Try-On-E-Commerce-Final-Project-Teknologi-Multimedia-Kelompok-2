@@ -1,6 +1,8 @@
 'use client';
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { CartService } from '@/app/functions/shop';
+import { products } from '@/content/products';
+import Toast from '@/components/ui/Toast';
 
 interface CartItem {
   id: string;
@@ -26,6 +28,8 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
   const cartService = new CartService();
 
   const refreshCart = () => {
@@ -35,8 +39,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addToCart = (productId: string, quantity: number = 1) => {
     try {
+      const product = products.find(p => p.id === productId);
       cartService.addItem(productId, quantity);
       refreshCart();
+      
+      // Show toast notification
+      if (product) {
+        const message = `${quantity} ${product.name}${quantity > 1 ? 's' : ''} added!`;
+        setToastMessage(message);
+        setShowToast(true);
+      }
     } catch (error) {
       console.error('Error adding item to cart:', error);
       throw error;
@@ -75,7 +87,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     refreshCart,
   };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={value}>
+      {children}
+      <Toast 
+        message={toastMessage}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+      />
+    </CartContext.Provider>
+  );
 }
 
 export function useCart() {

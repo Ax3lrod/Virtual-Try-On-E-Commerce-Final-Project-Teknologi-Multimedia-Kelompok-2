@@ -58,5 +58,20 @@ export const products = [
     imageUrl: 'https://example.com/product4.jpg',
     imagePath: '/images/products/golden_dress.png',
     arUrl: 'https://lens.snap.com/experience/324277d7-8fbe-490b-84c6-e44975fdac98',
+  },
+  {
+    id: '5',
+    name: 'Black Glasses',
+    description: 'Stylish black glasses perfect for any occasion. Premium quality with modern design.',
+    price: 89.99,
+    rating: 4.8,
+    category: 'accessories',
+    tags: ['glasses', 'black', 'stylish', 'premium'],
+    stock: 45,
+    discount: 0.2,
+    reviewCount: 42,
+    imageUrl: 'https://example.com/product5.jpg',
+    imagePath: '/images/products/sunglasses.jpg',
+    arUrl: 'https://lens.snap.com/experience/de17f7aa-7695-4384-b05b-c713daa575a6',
   }
 ];

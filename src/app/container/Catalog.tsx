@@ -152,6 +152,7 @@ export default function Catalog() {
                       name={product.name}
                       price={product.price}
                       imagePath={product.imagePath}
+                      arUrl={product.arUrl}
                     />
                   </div>
 

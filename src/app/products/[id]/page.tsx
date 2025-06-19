@@ -5,9 +5,10 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ShoppingCart, Heart, Share, Star, Truck, Shield, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Heart, Share, Star, Truck, Shield, RotateCcw, Camera } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useCart } from '@/context/CartContext';
 
 type ProductPageProps = {
   params: {
@@ -20,8 +21,31 @@ export default function ProductPage({ params }: ProductPageProps) {
   const product = products.find((p) => p.id === params.id);
   const [isLiked, setIsLiked] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
+  const { addToCart } = useCart();
 
   if (!product) return notFound();
+
+  const handleAddToCart = async () => {
+    if (isAdding) return;
+    
+    setIsAdding(true);
+    try {
+      addToCart(product.id, quantity);
+      setTimeout(() => {
+        setIsAdding(false);
+      }, 1500);
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+      setIsAdding(false);
+    }
+  };
+
+  const handleTryAR = () => {
+    if (product.arUrl) {
+      window.open(product.arUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
@@ -73,6 +97,18 @@ export default function ProductPage({ params }: ProductPageProps) {
                 />
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent"></div>
+                
+                {/* AR Badge */}
+                {product.arUrl && (
+                  <div className="absolute top-6 left-6">
+                    <div className="bg-gradient-to-r from-purple-500/90 to-blue-500/90 backdrop-blur-md px-3 py-2 rounded-full shadow-lg">
+                      <div className="flex items-center gap-2">
+                        <Camera className="w-4 h-4 text-white" />
+                        <span className="text-sm font-bold text-white">AR Available</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Floating Features */}
@@ -212,24 +248,26 @@ export default function ProductPage({ params }: ProductPageProps) {
                   <Button 
                     variant="gradient" 
                     size="lg" 
-                    className="flex-1 h-14 text-lg font-semibold shadow-lg hover:shadow-xl"
-                    disabled={product.stock === 0}
+                    className={`flex-1 h-14 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 ${
+                      isAdding ? 'bg-green-500 hover:bg-green-600' : ''
+                    }`}
+                    onClick={handleAddToCart}
+                    disabled={product.stock === 0 || isAdding}
                   >
                     <ShoppingCart className="mr-3 w-6 h-6" />
-                    {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+                    {isAdding ? 'Adding...' : product.stock > 0 ? `Add ${quantity} to Cart` : 'Out of Stock'}
                   </Button>
                   
                   {product.arUrl && (
-                    <Link href={product.arUrl} target="_blank" rel="noopener noreferrer" className="flex-1">
-                      <Button 
-                        variant="outline" 
-                        size="lg" 
-                        className="w-full h-14 text-lg font-semibold border-2 hover:bg-slate-50"
-                      >
-                        <RotateCcw className="mr-3 w-6 h-6" />
-                        Try in AR
-                      </Button>
-                    </Link>
+                    <Button 
+                      onClick={handleTryAR}
+                      variant="outline" 
+                      size="lg" 
+                      className="flex-1 h-14 text-lg font-semibold border-2 hover:bg-slate-50 bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200 text-purple-700"
+                    >
+                      <Camera className="mr-3 w-6 h-6" />
+                      Try in AR
+                    </Button>
                   )}
                 </div>
               </div>

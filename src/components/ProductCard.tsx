@@ -1,6 +1,6 @@
 'use client';
 import { Button } from "./ui/Button";
-import { ShoppingCart, Eye, Heart } from "lucide-react";
+import { ShoppingCart, Eye, Heart, Camera } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from 'framer-motion';
@@ -12,9 +12,10 @@ type ProductCardProps = {
   name: string;
   price: number;
   imagePath: string;
+  arUrl?: string;
 };
 
-export default function ProductCard({ id, name, price, imagePath }: ProductCardProps) {
+export default function ProductCard({ id, name, price, imagePath, arUrl }: ProductCardProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const { addToCart } = useCart();
@@ -25,14 +26,18 @@ export default function ProductCard({ id, name, price, imagePath }: ProductCardP
     setIsAdding(true);
     try {
       addToCart(id);
-      // Brief success state
       setTimeout(() => {
         setIsAdding(false);
       }, 1000);
     } catch (error) {
       console.error('Error adding item to cart:', error);
-      alert('Failed to add item to cart.');
       setIsAdding(false);
+    }
+  };
+
+  const handleTryAR = () => {
+    if (arUrl) {
+      window.open(arUrl, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -69,6 +74,18 @@ export default function ProductCard({ id, name, price, imagePath }: ProductCardP
             <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
           </motion.button>
           
+          {arUrl && (
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleTryAR}
+              className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500/90 to-blue-500/90 backdrop-blur-md text-white shadow-lg shadow-purple-500/25 transition-all duration-300 flex items-center justify-center"
+              title="Try in AR"
+            >
+              <Camera className="w-5 h-5" />
+            </motion.button>
+          )}
+          
           <Link href={`/products/${id}`}>
             <motion.button
               whileHover={{ scale: 1.1 }}
@@ -88,6 +105,15 @@ export default function ProductCard({ id, name, price, imagePath }: ProductCardP
             </span>
           </div>
         </div>
+
+        {/* AR Badge */}
+        {arUrl && (
+          <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
+            <div className="bg-gradient-to-r from-purple-500/90 to-blue-500/90 backdrop-blur-md px-2 py-1 rounded-full shadow-lg">
+              <span className="text-xs font-bold text-white">AR</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -131,11 +157,28 @@ export default function ProductCard({ id, name, price, imagePath }: ProductCardP
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Link href={`/products/${id}`} className="block">
-              <Button className="w-full h-12 bg-transparent border-2 border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-semibold rounded-xl transition-all duration-300">
-                View Details
-              </Button>
-            </Link>
+            {arUrl ? (
+              <div className="grid grid-cols-2 gap-2">
+                <Link href={`/products/${id}`} className="block">
+                  <Button className="w-full h-12 bg-transparent border-2 border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-semibold rounded-xl transition-all duration-300">
+                    Details
+                  </Button>
+                </Link>
+                <Button 
+                  onClick={handleTryAR}
+                  className="w-full h-12 bg-gradient-to-r from-purple-100 to-blue-100 border-2 border-purple-200 text-purple-700 hover:from-purple-200 hover:to-blue-200 hover:border-purple-300 font-semibold rounded-xl transition-all duration-300"
+                >
+                  <Camera className="mr-1 w-4 h-4" />
+                  AR
+                </Button>
+              </div>
+            ) : (
+              <Link href={`/products/${id}`} className="block">
+                <Button className="w-full h-12 bg-transparent border-2 border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 font-semibold rounded-xl transition-all duration-300">
+                  View Details
+                </Button>
+              </Link>
+            )}
           </motion.div>
         </div>
       </div>
