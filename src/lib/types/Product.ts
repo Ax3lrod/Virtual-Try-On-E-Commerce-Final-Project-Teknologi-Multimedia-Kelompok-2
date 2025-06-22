@@ -9,7 +9,6 @@ export type ProductType = {
   stock: number;
   discount: number;
   reviewCount: number;
-  imageUrl: string;
   imagePath: string;
   arUrl: string;
 };
